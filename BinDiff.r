@@ -1,4 +1,4 @@
-BinRatio <- function(n1, x1, n2, x2, step=0.1, initStep=0.1, level=3.84){
+BinDiff <- function(n1, x1, n2, x2, step=0.1, initStep=0.1, level=3.84){
 
 if(x1 >= n1) stop("all success?")
 
