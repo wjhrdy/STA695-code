@@ -33,19 +33,21 @@ BinDiff = function(n1, x1, n2, x2, step=0.1, level=3.84){
     pvalue = 1 - pchisq( val, df=1)
     list(`-2LLR` = val, cstar = cstar, Pval=pvalue)
   }
-  
+  Lbeta = Ubeta = MLE
   value = 0
   step1 = step
   for( i in 1:8 ) {
     Lbeta = Lbeta - step1
     while((value < level)&(Lbeta > -1)) {
-      Lbeta = Lbeta - step1
       value = Theta(theta = Lbeta, n1=n1, x1=x1, n2=n2, x2=x2)$'-2LLR'
+      Lbeta = Lbeta - step1
     }
     Lbeta = Lbeta + step1
         
     step1 = step1/10
-    value = Theta( theta =Lbeta, n1=n1, x1=x1, n2=n2, x2=x2)$'-2LLR'
+    if (Lbeta!=MLE) {
+      value = Theta( theta =Lbeta, n1=n1, x1=x1, n2=n2, x2=x2)$'-2LLR'
+    }
   }
   
   value1 = value
@@ -54,13 +56,16 @@ BinDiff = function(n1, x1, n2, x2, step=0.1, level=3.84){
   for( i in 1:8 ) {
     Ubeta = Ubeta + step
     while((value < level)&(Ubeta < 1)) {
-      Ubeta = Ubeta + step
       value = Theta(theta=Ubeta, n1=n1, x1=x1, n2=n2, x2=x2 )$'-2LLR'
+      Ubeta = Ubeta + step
     }
     Ubeta = Ubeta - step
     step = step/10
-    value = Theta(theta=Ubeta, n1=n1, x1=x1, n2=n2, x2=x2)$'-2LLR'
+    if (Lbeta!=MLE) {
+      value = Theta(theta=Ubeta, n1=n1, x1=x1, n2=n2, x2=x2)$'-2LLR'
+    }
   }
+  
   return( list(Low=Lbeta, Up=Ubeta, FstepL=step1, FstepU=step,
                Lvalue=value1, Uvalue=value) )
 }
