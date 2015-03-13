@@ -5,6 +5,10 @@ binom_diff_conf <- function (n1, x1, n2, x2, step=0.1, level=3.841459) {
     stop("n (number of successes) should not be larger than x (number of tries).")
   }
   
+  if ((x1 <= 0) | (x2 <= 0)) {
+    stop(" The number of successes must be greater than 0 since (0 < p_i < 1).")
+  }
+  
   mle <- (x1 / n1) - (x2 / n2)   
   eps <- .Machine$double.eps
   
